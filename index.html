@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Birthday Lani</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Dancing Script', cursive;
+      background: linear-gradient(135deg, #fff0f5, #ffe4e1); 
+      color: #333;
+      height: 100%;
+      overflow: hidden;
+    }
+    .hidden { display: none; }
+    #loading, #welcome, #main {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
+    }
+    #loading {
+      background: #fff0f5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+    #bunny {
+      width: 200px;
+      height: 200px;
+    }
+    #welcome {
+      background: transparent;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .avatar {
+      width: 150px;
+      height: auto;
+      margin: 1rem auto;
+    }
+    .custom-btn {
+      background: #ffffff;
+      color: black;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      font-family: 'Arial', sans-serif;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .custom-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0px 6px 12px rgba(0,0,0,0.15);
+    }
+    #main {
+      background: transparent;
+      display: none;
+      flex-direction: column;
+
+      justify-content: flex-start;
+      overflow-y: auto;
+      padding-bottom: 3rem;
+    }
+    .hero, .section {
+      padding: 2rem 1rem;
+      width: 90%;
+      max-width: 600px;
+      text-align: center;
+      position: relative;
+      background: #fff;
+      border-radius: 16px;
+      margin-bottom: 2rem;
+    }
+    .section h2 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+    .wave-top svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      transform: translateY(-100%);
+    }
+    .wave-bottom svg {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 10px;
+    }
+    .gallery img {
+      width: 100%;
+      border-radius: 12px;
+    }
+    iframe {
+      width: 100%;
+      height: 250px;
+      border: 0;
+      border-radius: 12px;
+    }
+    #butterfly-container {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .butterfly-lottie {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      animation: floatButterfly linear infinite;
+    }
+    .mainsatu {
+      background-color: #ffe4e1;
+      text-align: center;
+    }
+    .maintext{
+      margin: auto;
+      width: 60%;
+      padding: 10px;
+      text-align: left;
+      font-family: Baskerville, "Baskerville Old Face", "Goudy Old Style", Garamond, "Times New Roman", serif;
+    }
+    .mainmain{
+      margin-top: 0px;
+      margin-bottom: 0px;
+      background-color: #ffe4e1;
+      text-align: center;
+    }
+    .flexbox{
+      align-items: center;
+    }
+    .timebox{
+      display: flex;
+      gap: 7px;
+      justify-content: center; /* Horizontal center */
+      align-items: center;     /* Vertical center */
+    }
+    .time{
+      text-align: center;
+      border-radius: 25px;
+      border: 1px solid #faf7f8;
+      width: 85px;
+      height: 75px;
+    }
+    .time h2{
+        font-size: 1rem;
+        font-weight: 25;
+    }
+    .hanging-galleryleft {
+      display: flex;
+      flex-direction: column;
+      align-items: left;
+      gap: 40px;
+      margin: 2rem;
+    }
+    .hanging-galleryright {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 40px;
+      margin: 2rem;
+    }
+    .frame {
+      position: relative;
+      width: 150px;
+      transform: rotate(-5deg);
+      box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.2);
+      background: #222;
+      border: 10px solid #222;
+      border-radius: 4px;
+    }
+    .frame img {
+      display: block;
+      width: 100%;
+      border-radius: 2px;
+    }
+    .frame::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 12px;
+      height: 12px;
+      background: #222;
+      border-radius: 50%;
+      z-index: 2;
+    }
+    .string {
+      position: absolute;
+      top: -20px;
+      left: 50%;
+      width: 120px;
+      height: 40px;
+      transform: translateX(-50%);
+    }
+    .string::before,
+    .string::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      width: 2px;
+      height: 40px;
+      background: #444;
+      transform-origin: top;
+    }
+    .string::before {
+      left: 0;
+      transform: rotate(45deg);
+    }
+    .string::after {
+      right: 0;
+      transform: rotate(-45deg);
+    }
+    .frame.tilt {
+      transform: rotate(5deg);
+    }
+    #header{
+      margin-bottom: -15px;
+      margin-top: -35px;
+    }
+    @keyframes floatButterfly {
+      0% {
+        transform: translate(0, 0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      100% {
+        transform: translate(var(--x), var(--y)) rotate(360deg);
+        opacity: 0;
+      }
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/elegant-2" rel="stylesheet">
+</head>
+<body>
+  <div id="loading"><div id="bunny"></div></div>
+  <div id="welcome" class="hidden">
+    <h2>The Birthday Of</h2>
+    <img src="assets/lani.png" alt="Lani" class="avatar" />
+    <h3>Siti Haelani Radianty</h3>
+    <button id="openBtn" class="custom-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="black" viewBox="0 0 24 24">
+        <path d="M20 4H4C2.9 4 2 4.9 2 6v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/>
+      </svg>
+      <span style="margin-left: 8px;">Open Invitation</span>
+    </button>
+  </div>
+  <div id="main" class="hidden">
+    <div id="butterfly-container"></div>
+    <div class="mainsatu">
+      <h1>Happy Birthday!</h1>
+      <p>Siti Haelani Radianty</p>
+      <p>who turn into 22nd Years Old! at</p>
+      <div class="flexbox">
+        <div class="timebox">
+            <div class="time">
+                <h2 id="days">00</h2>
+                <p>Days</p>
+            </div>
+            <div class="time">
+                <h2 id="hours">00</h2>
+                <p>Hours</p>
+            </div>
+            <div class="time">
+                <h2 id="minutes">00</h2>
+                <p>Minutes</p>
+            </div>
+            <div class="time">
+                <h2 id="seconds">00</h2>
+                <p>Seconds</p>
+            </div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#ffe4e1" fill-opacity="1" d="M0,128L40,128C80,128,160,128,240,117.3C320,107,400,85,480,106.7C560,128,640,192,720,181.3C800,171,880,85,960,53.3C1040,21,1120,43,1200,74.7C1280,107,1360,149,1400,170.7L1440,192L1440,0L1400,0C1360,0,1280,0,1200,0C1120,0,1040,0,960,0C880,0,800,0,720,0C640,0,560,0,480,0C400,0,320,0,240,0C160,0,80,0,40,0L0,0Z"></path></svg>
+    </div>
+    <div class="maintext">
+      <p>
+        "Happy 22nd birthday, my love.
+        At twenty-two, you bloom like a verse in spring
+        softly spoken, deeply felt, impossble to forget.
+        You are poetry in motion, a melody I never tire of hearing,
+        and in your smile, I find the warmth of every sunrise"
+      </p>
+      <p>
+        With love, Deny Ahmad Sofyan -
+      </p>
+    </div>
+    <br>
+    <br>
+    <br>
+    <div>
+      <svg id="header" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#ffe4e1" fill-opacity="1" d="M0,160L40,165.3C80,171,160,181,240,160C320,139,400,85,480,90.7C560,96,640,160,720,176C800,192,880,160,960,170.7C1040,181,1120,235,1200,250.7C1280,267,1360,245,1400,234.7L1440,224L1440,320L1400,320C1360,320,1280,320,1200,320C1120,320,1040,320,960,320C880,320,800,320,720,320C640,320,560,320,480,320C400,320,320,320,240,320C160,320,80,320,40,320L0,320Z"></path></svg>
+    </div>
+    <div class="mainmain"> 
+      <h2>Previous Birthday Memories</h2>
+      <br>
+      <span>- Cocorico, Dago 29 April 2023 -</span>
+      <div class="hanging-galleryleft">
+        <div class="frame">
+          <div class="string"></div>
+          <img src="assets/cocorico/1.jpg" alt="Photo 1">
+        </div>
+      </div>
+      <div class="hanging-galleryright">
+        <div class="frame tilt">
+          <div class="string"></div>
+          <img src="assets/cocorico/2.jpg" alt="Photo 2">
+        </div>
+      </div>
+      <div class="maintext">
+        <p>
+          Pertama kali kita bersama lagi setelah 4 tahun berpisah semenjak sma, Ulang Tahun ke 20 bertemakan Fancy Dinner di Cafe Cocorico Dago Bandung tanggal 29 April 2023,
+        </p>
+        <p>
+          banyak kenangan saat itu, mulai dari kesana hampir telat, makanan Fancy yang kita terlalu udik gangerti makannya haha, sampai pulangnya kamu sakit kecapean,
+        </p>
+        <p>
+          tapi semua itu terbayarkan dengan tempat yang kosong bahkan hampir seluruh restoran kosong waww, dan jangan lupa di akhir malam dinyanyikan lagu jambrud secara private.
+        </p>
+      </div>
+      <br>
+      <br>
+      <span>- Sierra Cafe, Dago 29 April 2024 -</span>
+      <div class="hanging-galleryleft">
+        <div class="frame">
+          <div class="string"></div>
+          <img src="assets/sierra/1.jpg" alt="Photo 1">
+        </div>
+      </div>
+      <div class="hanging-galleryright">
+        <div class="frame tilt">
+          <div class="string"></div>
+          <img src="assets/sierra/2.jpg" alt="Photo 2">
+        </div>
+      </div>
+      <div class="maintext">
+        <p>
+          Setelah setahun berlalu, kembali merayakan hari paling bahagia di Cafe Sierra Dago Bandung tanggal 29 April 2024,
+        </p>
+        <p>
+          Tak jauh berbeda tempatnya, masih sekitar dago, bertemakan dinner menjadikan acara ulang tahun yang ke 21 berasa spesial, meskipun tempatnya ramai, 
+          tapi kita masih bisa menikmati acara ulang tahun dengan penuh suka cita,
+        </p>
+        <p>
+          Dibarengi dengan kelap kelip bintang di malam hari, hadiah kala itu sangatlah spesial karna sampai sekarang tidurpun harus ada disampingnya, jaga terus ya hadiah nya.
+        </p>
+      </div>
+    </div>
+    <br>
+    <div>
+      <svg id="header" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#ffe4e1" fill-opacity="1" d="M0,128L40,128C80,128,160,128,240,117.3C320,107,400,85,480,106.7C560,128,640,192,720,181.3C800,171,880,85,960,53.3C1040,21,1120,43,1200,74.7C1280,107,1360,149,1400,170.7L1440,192L1440,0L1400,0C1360,0,1280,0,1200,0C1120,0,1040,0,960,0C880,0,800,0,720,0C640,0,560,0,480,0C400,0,320,0,240,0C160,0,80,0,40,0L0,0Z"></path></svg>
+    </div>
+    <div class="maintext">
+      <p>
+        Setelah 2 tahun merayakan dan sekarang tepat tahun ke 3, 29 April 2025 pada ulang tahun yang ke 22, tema apa ya yang dipakai untuk acara selanjutnya?
+      </p>
+    </div>
+    <br>
+    <br>
+    <br>
+    <div>
+      <svg id="header" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#ffe4e1" fill-opacity="1" d="M0,160L40,165.3C80,171,160,181,240,160C320,139,400,85,480,90.7C560,96,640,160,720,176C800,192,880,160,960,170.7C1040,181,1120,235,1200,250.7C1280,267,1360,245,1400,234.7L1440,224L1440,320L1400,320C1360,320,1280,320,1200,320C1120,320,1040,320,960,320C880,320,800,320,720,320C640,320,560,320,480,320C400,320,320,320,240,320C160,320,80,320,40,320L0,320Z"></path></svg>
+    </div>
+    <div class="mainmain"> 
+      <h2>Invitation Party</h2>
+      <br>
+      <span>- 29 April 2025 -</span>
+      <div class="maintext">
+        <p>
+          Karena Masih Sekitar 7 Hari an lagi, Jadi masih surprise yaa hahaha :D
+        </p>
+        <p>
+          Stay Tune aja, pantengin terus website ini, siapa tau udah update ^^
+        </p>
+        <p>
+          Aku kasih clue aja untuk sekarang, clunyaaaa........ belum pernah dan kesukaan.
+        </p>
+      </div>
+      <br>
+      <br>
+    </div>
+    <br>
+    <div>
+      <svg id="header" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#ffe4e1" fill-opacity="1" d="M0,128L40,128C80,128,160,128,240,117.3C320,107,400,85,480,106.7C560,128,640,192,720,181.3C800,171,880,85,960,53.3C1040,21,1120,43,1200,74.7C1280,107,1360,149,1400,170.7L1440,192L1440,0L1400,0C1360,0,1280,0,1200,0C1120,0,1040,0,960,0C880,0,800,0,720,0C640,0,560,0,480,0C400,0,320,0,240,0C160,0,80,0,40,0L0,0Z"></path></svg>
+    </div>
+    <div class="maintext">
+      <p>بَارَكَ ٱللَّهُ فِي عُمْرِكِ
+      </p>
+      <p>Barakallahu fii ‘umrik.</p>
+      <p>Semoga Allah memberkahi usiamu.</p>
+      <p>Di usiamu yang ke-22 ini,</p>
+      <p>Semoga Allah SWT senantiasa melimpahkan rahmat, keberkahan, dan perlindungan-Nya kepadamu.</p> 
+      <p>Engkau adalah anugerah yang aku syukuri setiap hari—semoga segala doa dan harapanmu dikabulkan dengan cara paling indah oleh-Nya.</p>
+    </div>
+    <br>
+    <br>
+    <br>
+    <div>
+      <svg id="header" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#ffe4e1" fill-opacity="1" d="M0,160L40,165.3C80,171,160,181,240,160C320,139,400,85,480,90.7C560,96,640,160,720,176C800,192,880,160,960,170.7C1040,181,1120,235,1200,250.7C1280,267,1360,245,1400,234.7L1440,224L1440,320L1400,320C1360,320,1280,320,1200,320C1120,320,1040,320,960,320C880,320,800,320,720,320C640,320,560,320,480,320C400,320,320,320,240,320C160,320,80,320,40,320L0,320Z"></path></svg>
+    </div>
+    <div class="mainmain"> 
+      <h2>Hopes for the Future of 22nd</h2>
+      <br>
+      <div class="maintext">
+        <p>Nanti kamu isi ya, nanti aku siapin buat fill nya disini pas update :D</p>
+        <p>Sekarang kamu siapin aja harapan dan doa nya di dalam hati.</p>
+      </div>
+      <br>
+      <br>
+    </div>
+    <br>
+    <div>
+      <svg id="header" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="#ffe4e1" fill-opacity="1" d="M0,128L40,128C80,128,160,128,240,117.3C320,107,400,85,480,106.7C560,128,640,192,720,181.3C800,171,880,85,960,53.3C1040,21,1120,43,1200,74.7C1280,107,1360,149,1400,170.7L1440,192L1440,0L1400,0C1360,0,1280,0,1200,0C1120,0,1040,0,960,0C880,0,800,0,720,0C640,0,560,0,480,0C400,0,320,0,240,0C160,0,80,0,40,0L0,0Z"></path></svg>
+    </div>
+    <div class="maintext">
+      <p>Made By Love @denyahmadsofyan@gmail.com</p>
+    </div>
+    <br>
+    <br>
+    <br>
+    <audio id="bgMusic" loop autoplay>
+      <source src="assets/bg-music.mp3" type="audio/mpeg" />
+    </audio>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.9.6/lottie.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const bunnyContainer = document.getElementById("bunny");
+      const loadingScreen = document.getElementById("loading");
+      const welcomeScreen = document.getElementById("welcome");
+      const mainContent = document.getElementById("main");
+      const openBtn = document.getElementById("openBtn");
+      const bgMusic = document.getElementById("bgMusic");
+      const countdownEl = document.getElementById("countdown");
+
+      lottie.loadAnimation({ container: bunnyContainer, renderer: "svg", loop: true, autoplay: true, path: "assets/bunny-loading.json" });
+
+      window.addEventListener("load", () => {
+        setTimeout(() => {
+          loadingScreen.style.display = "none";
+          welcomeScreen.classList.remove("hidden");
+        }, 2000);
+      });
+
+      function spawnButterflyLottie(path) {
+        const container = document.getElementById("butterfly-container");
+        const positions = [
+          { left: "10px", top: "10px" },
+          { left: "20px", bottom: "10px" },
+          { right: "10px", top: "20px" },
+          { right: "20px", bottom: "20px" },
+        ];
+        positions.forEach(pos => {
+          const wrapper = document.createElement("div");
+          wrapper.classList.add("butterfly-lottie");
+          Object.assign(wrapper.style, pos);
+          wrapper.style.setProperty("--x", (Math.random() * 300 - 150) + "px");
+          wrapper.style.setProperty("--y", (Math.random() * 300 - 150) + "px");
+          wrapper.style.animationDuration = (15 + Math.random() * 10) + "s";
+          container.appendChild(wrapper);
+          lottie.loadAnimation({ container: wrapper, renderer: "svg", loop: true, autoplay: true, path: path });
+        });
+      }
+
+      if (openBtn) {
+        openBtn.addEventListener("click", () => {
+          const clickSound = new Audio("assets/click.mp3");
+          clickSound.play();
+          confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+          const duration = 5000;
+          const end = Date.now() + duration;
+          (function frame() {
+            confetti({ particleCount: 2, angle: 60, spread: 55, origin: { x: 0 } });
+            confetti({ particleCount: 2, angle: 120, spread: 55, origin: { x: 1 } });
+            if (Date.now() < end) requestAnimationFrame(frame);
+          })();
+          welcomeScreen.style.display = "none";
+          mainContent.classList.remove("hidden");
+          mainContent.style.display = "flex";
+          if (bgMusic && bgMusic.paused) {
+            bgMusic.play().catch(() => console.log("Autoplay prevented by browser."));
+          }
+          spawnButterflyLottie("assets/butterfly.json");
+        });
+      }
+
+      
+
+      const Days = document.getElementById('days');
+const Hours = document.getElementById('hours');
+const Minutes = document.getElementById('minutes');
+const Seconds = document.getElementById('seconds');
+
+const targetDate = new Date("April 29 2025 00:00:00").getTime();
+
+function timer () {
+    const currentDate = new Date().getTime();
+    const distance = targetDate - currentDate;
+
+    const days = Math.floor(distance / 1000 / 60 / 60 / 24);
+    const hours = Math.floor(distance / 1000 / 60 / 60) % 24;
+    const minutes = Math.floor(distance / 1000 / 60) % 60;
+    const seconds = Math.floor(distance / 1000) % 60;
+
+    Days.innerHTML = days;
+    Hours.innerHTML = hours;
+    Minutes.innerHTML = minutes;
+    Seconds.innerHTML = seconds;
+
+    if(distance < 0){
+        Days.innerHTML = "00";
+        Hours.innerHTML = "00";
+        Minutes.innerHTML = "00";
+        Seconds.innerHTML = "00";
+    }
+}
+
+setInterval(timer, 1000);
+    });
+  </script>
+</body>
+</html>
+
+
