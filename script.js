@@ -102,7 +102,7 @@ giftButton.addEventListener('click', () => {
   // Setelah animasi selesai (500ms), cek password
   setTimeout(() => {
     giftButton.classList.remove('shake');
-    const password = prompt('Masukkan password untuk membuka hadiah:');
+    const password = prompt('Masukkan password untuk membuka surat:');
     if (password === correctPassword) {
       modal.style.display = 'block';
     } else {
